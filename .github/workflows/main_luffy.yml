@@ -1,4 +1,7 @@
-name: Build and deploy Hugo app to Azure Web App - luffy
+# Docs for the Azure Web Apps Deploy action: https://github.com/Azure/webapps-deploy
+# More GitHub Actions for Azure: https://github.com/Azure/actions
+
+name: Build and deploy Node.js app to Azure Web App - luffy
 
 on:
   push:
@@ -12,24 +15,17 @@ jobs:
 
     steps:
       - uses: actions/checkout@v4
-      
-      - name: Setup Hugo
-        uses: peaceiris/actions-hugo@v2
-        with:
-          hugo-version: 'latest'
-          extended: true
 
-      - name: Setup Hugo
-        uses: peaceiris/actions-hugo@v2
+      - name: Set up Node.js version
+        uses: actions/setup-node@v3
         with:
-          hugo-version: 'latest'
-          extended: true
+          node-version: '20.x'
 
       - name: npm install, build, and test
         run: |
-          npm run project-setup
           npm install
-          npm run build
+          npm run build --if-present
+          npm run test --if-present
 
       - name: Zip artifact for deployment
         run: zip release.zip ./* -r
@@ -61,14 +57,15 @@ jobs:
       - name: Login to Azure
         uses: azure/login@v2
         with:
-          client-id: ${{ secrets.AZUREAPPSERVICE_CLIENTID_7EEBED6BD13B4CF6AC6DD6A47114F867 }}
-          tenant-id: ${{ secrets.AZUREAPPSERVICE_TENANTID_3081585AB0AA40A6AFD3106C4E3411AA }}
-          subscription-id: ${{ secrets.AZUREAPPSERVICE_SUBSCRIPTIONID_7760B483144D4A32A845005395B1F01C }}
+          client-id: ${{ secrets.AZUREAPPSERVICE_CLIENTID_64F53FB0F4644767ABA1D4F2FE14918B }}
+          tenant-id: ${{ secrets.AZUREAPPSERVICE_TENANTID_D93E92D22CB44FAD92C9DFD6EEAC9F8E }}
+          subscription-id: ${{ secrets.AZUREAPPSERVICE_SUBSCRIPTIONID_7F6A7269F0BB4AB2AFB7394E419F01AF }}
 
       - name: 'Deploy to Azure Web App'
         id: deploy-to-webapp
         uses: azure/webapps-deploy@v3
         with:
           app-name: 'luffy'
+          slot-name: 'Production'
           package: .
           
