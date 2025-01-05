@@ -22,6 +22,17 @@ jobs:
         with:
           submodules: true
           lfs: false
+      - name: Setup Hugo
+        uses: peaceiris/actions-hugo@v2
+        with:
+          hugo-version: 'latest'
+          extended: true
+
+      - name: npm install, build, and test
+        run: |
+          npm run project-setup
+          npm install
+          
       - name: Install OIDC Client from Core Package
         run: npm install @actions/core@1.6.0 @actions/http-client
       - name: Get Id Token
